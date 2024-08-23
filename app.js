@@ -35,3 +35,12 @@ app.get('/mentors', async(request, response) => {
     const mentors = await db.all(getMentorsQuery);
     response.send(mentors);
 });
+
+app.get('/mentors-availability', async(request, response) => {
+    const getMentorsAvailabilityQuery = `
+    SELECT mentors.name, mentors.availability
+    FROM mentors
+    `;
+    const mentorsAvailability = await db.all(getMentorsAvailabilityQuery);
+    response.send(mentorsAvailability);
+})

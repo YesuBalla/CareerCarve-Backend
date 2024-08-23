@@ -44,3 +44,13 @@ app.get('/mentors-availability', async(request, response) => {
     const mentorsAvailability = await db.all(getMentorsAvailabilityQuery);
     response.send(mentorsAvailability);
 })
+
+app.post('/schedule-session', async(request, response) => {
+    const { studentName, mentorName, areaOfInterest, mentorAvailability, scheduledDuration } = request.body;
+    const scheduleSessionQuery = `
+    INSERT INTO bookings (student_name, mentor_name, area_of_interest, mentor_availability, scheduled_duration)
+    VALUES ('${studentName}', '${mentorName}', '${areaOfInterest}', '${mentorAvailability}', '${scheduledDuration}')
+    `;
+    await db.run(scheduleSessionQuery);
+    response.send({ message: 'Session Scheduled Successfully' });
+})

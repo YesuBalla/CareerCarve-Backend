@@ -1,8 +1,7 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
-app.use(express.json());
-// app.use();
+app.use(cors());
 
 const {open} = require('sqlite');
 const sqlite3 = require('sqlite3');
@@ -50,14 +49,8 @@ app.post('/schedule-session', async(request, response) => {
     const { studentName, mentorName, areaOfInterest, mentorAvailability, scheduledDuration } = request.body;
     const scheduleSessionQuery = `
     INSERT INTO bookings (student_name, mentor_name, area_of_interest, mentor_availability, scheduled_duration)
-    VALUES (?, ?, ?, ?, ?)
+    VALUES ('${studentName}', '${mentorName}', '${areaOfInterest}', '${mentorAvailability}', '${scheduledDuration}');
     `;
-    db.run(scheduleSessionQuery, [studentName, mentorName, areaOfInterest, mentorAvailability, scheduledDuration], function (err) {
-        if (err) {
-            console.error('Error inserting data:', err);
-            response.status(500).send({ message: 'Failed to schedule session' });
-        } else {
-            response.send({ message: 'Session Scheduled Successfully', id: this.lastID });
-        }
-    });
+    await db.run(scheduleSessionQuery);
+    response.send({ message: 'Session Scheduled Successfully' });
 });

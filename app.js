@@ -38,7 +38,7 @@ app.get('/mentors', async(request, response) => {
 
 app.get('/mentors-availability', async(request, response) => {
     const getMentorsAvailabilityQuery = `
-    SELECT mentors.name, mentors.availability
+    SELECT mentors.id, mentors.name, mentors.availability, mentors.areas_of_expertise
     FROM mentors
     `;
     const mentorsAvailability = await db.all(getMentorsAvailabilityQuery);

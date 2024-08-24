@@ -1,9 +1,12 @@
 const express = require('express');
 const app = express();
-// const cors = require('cors');
-// app.use(cors());
+const cors = require('cors');
 
 app.use(express.json());
+
+app.use(cors({
+    origin: 'http://localhost:3000' // Allow your frontend domain
+  }));
 
 const {open} = require('sqlite');
 const sqlite3 = require('sqlite3');
@@ -58,28 +61,18 @@ app.get('/mentors-availability', async(request, response) => {
 // });
 
 app.post('/schedule-session', async (request, response) => {
-    try {
-        const { studentName, mentorName, areaOfInterest, mentorAvailability, scheduledDuration } = request.body;
+    const { studentName, mentorName, areaOfInterest, mentorAvailability, scheduledDuration } = request.body;
 
-        // Check if body properties exist
-        if (!studentName || !mentorName || !areaOfInterest || !mentorAvailability || !scheduledDuration) {
-            return response.status(400).send({ message: 'Missing required fields' });
+    const scheduleSessionQuery = `
+        INSERT INTO bookings (student_name, mentor_name, area_of_interest, mentor_availability, scheduled_duration)
+        VALUES (?, ?, ?, ?, ?)
+    `;
+
+    db.run(scheduleSessionQuery, [studentName, mentorName, areaOfInterest, mentorAvailability, scheduledDuration], function (err) {
+        if (err) {
+            console.error('Error inserting data:', err);
+            return response.status(500).send({ message: 'Failed to schedule session' });
         }
-
-        // Example SQL query to insert data (use parameterized queries to avoid SQL injection)
-        const scheduleSessionQuery = `
-            INSERT INTO bookings (student_name, mentor_name, area_of_interest, mentor_availability, scheduled_duration)
-            VALUES (?, ?, ?, ?, ?)
-        `;
-        db.run(scheduleSessionQuery, [studentName, mentorName, areaOfInterest, mentorAvailability, scheduledDuration], function (err) {
-            if (err) {
-                console.error('Error inserting data:', err);
-                return response.status(500).send({ message: 'Failed to schedule session' });
-            }
-            response.send({ message: 'Session Scheduled Successfully', id: this.lastID });
-        });
-    } catch (error) {
-        console.error('Server error:', error);
-        response.status(500).send({ message: 'Server error' });
-    }
+        response.send({ message: 'Session Scheduled Successfully', id: this.lastID });
+    });
 });

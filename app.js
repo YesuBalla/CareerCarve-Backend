@@ -50,29 +50,13 @@ app.get('/mentors-availability', async(request, response) => {
     response.send(mentorsAvailability);
 })
 
-// app.post('/schedule-session', async(request, response) => {
-//     const { studentName, mentorName, areaOfInterest, mentorAvailability, scheduledDuration } = request.body;
-//     const scheduleSessionQuery = `
-//     INSERT INTO bookings (student_name, mentor_name, area_of_interest, mentor_availability, scheduled_duration)
-//     VALUES ('${studentName}', '${mentorName}', '${areaOfInterest}', '${mentorAvailability}', '${scheduledDuration}');
-//     `;
-//     await db.run(scheduleSessionQuery);
-//     response.send({ message: 'Session Scheduled Successfully' });
-// });
 
-app.post('/schedule-session', async (request, response) => {
+app.post('/schedule-session', async(request, response) => {
     const { studentName, mentorName, areaOfInterest, mentorAvailability, scheduledDuration } = request.body;
-
     const scheduleSessionQuery = `
-        INSERT INTO bookings (student_name, mentor_name, area_of_interest, mentor_availability, scheduled_duration)
-        VALUES (?, ?, ?, ?, ?)
+    INSERT INTO bookings (student_name, mentor_name, area_of_interest, mentor_availability, scheduled_duration)
+    VALUES (?,?,?,?,?);
     `;
-
-    db.run(scheduleSessionQuery, [studentName, mentorName, areaOfInterest, mentorAvailability, scheduledDuration], function (err) {
-        if (err) {
-            console.error('Error inserting data:', err);
-            return response.status(500).send({ message: 'Failed to schedule session' });
-        }
-        response.send({ message: 'Session Scheduled Successfully', id: this.lastID });
-    });
-});
+    await db.run(scheduleSessionQuery, studentName, mentorName, areaOfInterest, mentorAvailability, scheduledDuration);
+    response.send({ message: 'Session Scheduled Successfully' });
+})

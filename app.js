@@ -4,7 +4,9 @@ const cors = require('cors');
 
 app.use(express.json());
 
-app.use(cors());
+app.use(cors({
+    origin: 'https://career-carve-yesu.netlify.app'
+}));
 
 const {open} = require('sqlite');
 const sqlite3 = require('sqlite3');

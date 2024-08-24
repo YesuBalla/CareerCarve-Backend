@@ -60,3 +60,11 @@ app.post('/schedule-session', async(request, response) => {
     await db.run(scheduleSessionQuery, studentName, mentorName, areaOfInterest, mentorAvailability, scheduledDuration);
     response.send({ message: 'Session Scheduled Successfully' });
 })
+
+app.get('/bookings', async(request, response) => {
+    const getBookingsQuery = `
+    SELECT * FROM bookings
+    `;
+    const bookings = await db.all(getBookingsQuery);
+    response.send(bookings);
+})

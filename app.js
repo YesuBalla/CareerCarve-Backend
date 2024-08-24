@@ -52,6 +52,7 @@ app.get('/mentors-availability', async(request, response) => {
 
 
 app.post('/schedule-session', async(request, response) => {
+    console.log(request.body);
     const { studentName, mentorName, areaOfInterest, mentorAvailability, scheduledDuration } = request.body;
     const scheduleSessionQuery = `
     INSERT INTO bookings (student_name, mentor_name, area_of_interest, mentor_availability, scheduled_duration)

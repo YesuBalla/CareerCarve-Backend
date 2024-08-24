@@ -4,9 +4,7 @@ const cors = require('cors');
 
 app.use(express.json());
 
-app.use(cors({
-    origin: 'http://localhost:3000' // Allow your frontend domain
-  }));
+app.use(cors());
 
 const {open} = require('sqlite');
 const sqlite3 = require('sqlite3');
@@ -52,7 +50,6 @@ app.get('/mentors-availability', async(request, response) => {
 
 
 app.post('/schedule-session', async(request, response) => {
-    console.log(request.body);
     const { studentName, mentorName, areaOfInterest, mentorAvailability, scheduledDuration } = request.body;
     const scheduleSessionQuery = `
     INSERT INTO bookings (student_name, mentor_name, area_of_interest, mentor_availability, scheduled_duration)
